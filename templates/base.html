@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Manager{% endblock %} - V3</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <style type="text/tailwindcss">
+        html {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .task-completed .task-title {
+            @apply line-through text-gray-500; /* Adjusted color */
+        }
+        .task-completed .task-description {
+             @apply text-gray-500;
+        }
+         .task-completed {
+             @apply bg-gray-50; /* Subtle background for completed task cards */
+         }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 antialiased">
+
+    {# Simple Header #}
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+             <h1 class="text-2xl font-bold text-gray-800 text-center sm:text-left">
+                <a href="{{ url_for('index') }}">Task Manager</a>
+            </h1>
+        </div>
+    </header>
+
+    {# Main Content Area #}
+    <main class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {# Flash Messages #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6 space-y-3">
+                {% for category, message in messages %}
+                    {% set alert_color = 'blue' %} {# Default #}
+                    {% if category == 'success' %}{% set alert_color = 'green' %}
+                    {% elif category == 'error' %}{% set alert_color = 'red' %}
+                    {% elif category == 'warning' %}{% set alert_color = 'yellow' %}
+                    {% endif %}
+                    <div class="p-4 border-l-4 border-{{ alert_color }}-500 bg-{{ alert_color }}-50 text-{{ alert_color }}-700 rounded-r shadow-sm" role="alert">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {# Content block for child templates #}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {# Simple Footer #}
+    <footer class="text-center p-4 text-xs text-gray-500 mt-10">
+        <p>&copy; {{ now.year }} Task Manager App</p>
+    </footer>
+
+    {# Scripts Block #}
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>
