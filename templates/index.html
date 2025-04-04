@@ -3,25 +3,21 @@
 {% block title %}Tasks{% endblock %}
 
 {% block content %}
-{# Alpine component to manage collapsible sections #}
 <div x-data="{ showAddForm: false, showFilters: false }" class="space-y-6">
 
     {# --- Add Task Section (Collapsible) --- #}
     <section class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-        {# Header to toggle visibility #}
         <div class="px-4 py-3 sm:px-6 border-b border-gray-200 bg-gray-50 cursor-pointer" @click="showAddForm = !showAddForm">
             <h2 class="text-lg font-semibold text-gray-700 flex justify-between items-center">
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                    Add New Task
-                </span>
-                 {# Chevron Icon indicates open/closed state #}
-                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': showAddForm }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>Add New Task</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': showAddForm }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </h2>
         </div>
-        {# Collapsible Form Content #}
         <div x-show="showAddForm" x-cloak x-transition class="p-4 sm:p-6">
             <form action="{{ url_for('add_task') }}" method="POST" class="space-y-4">
+                 {# --- CSRF TOKEN --- #}
+                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                 {# --- END CSRF TOKEN --- #}
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title <span class="text-red-500">*</span></label>
                     <input type="text" id="title" name="title" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -44,21 +40,17 @@
 
     {# --- Filters Section (Collapsible) --- #}
     <section class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-         {# Header to toggle visibility #}
         <div class="px-4 py-3 sm:px-6 border-b border-gray-200 bg-gray-50 cursor-pointer" @click="showFilters = !showFilters">
              <h2 class="text-lg font-semibold text-gray-700 flex justify-between items-center">
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
-                    Search & Filters
-                </span>
+                <span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 inline-block text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>Search & Filters</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 transition-transform duration-200" :class="{ 'rotate-180': showFilters }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
             </h2>
         </div>
-         {# Collapsible Filter Content #}
         <div x-show="showFilters" x-cloak x-transition class="p-4 sm:p-6">
+            {# Filter form contents remain largely the same - links already preserve params #}
+            {# Make sure the form tag itself is present if relying on date onchange submit #}
             <form method="GET" action="{{ url_for('index') }}" class="space-y-5">
-                {# Search Input #}
-                 <div>
+                <div>
                      <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
                      <div class="relative">
                         <input type="search" id="search" name="search" placeholder="Search title, description, tags..." value="{{ current_search_term or '' }}"
@@ -68,44 +60,33 @@
                          </div>
                      </div>
                 </div>
-
-                 {# Row for Status, Date, Tags Filters #}
                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                     {# Status Filter #}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <div class="flex flex-wrap gap-2">
-                             {# Define filter badge styles #}
                              {% set base_badge = 'inline-block px-3 py-1 text-xs font-medium rounded-full transition duration-150 ease-in-out cursor-pointer border' %}
                              {% set inactive_badge = base_badge + ' bg-white text-gray-700 border-gray-300 hover:bg-gray-50' %}
                              {% set active_badge_yellow = base_badge + ' bg-yellow-500 text-white border-transparent shadow-sm' %}
                              {% set active_badge_green = base_badge + ' bg-green-500 text-white border-transparent shadow-sm' %}
                              {% set active_badge_blue = base_badge + ' bg-blue-500 text-white border-transparent shadow-sm' %}
-
                              <a href="{{ url_for('index', status='incomplete', tag=current_filter_tag, search=current_search_term, created_on=current_filter_date) }}" class="{{ active_badge_yellow if current_filter_status == 'incomplete' else inactive_badge }}">Incomplete</a>
                              <a href="{{ url_for('index', status='complete', tag=current_filter_tag, search=current_search_term, created_on=current_filter_date) }}" class="{{ active_badge_green if current_filter_status == 'complete' else inactive_badge }}">Complete</a>
                              <a href="{{ url_for('index', tag=current_filter_tag, search=current_search_term, created_on=current_filter_date) }}" class="{{ active_badge_blue if not current_filter_status else inactive_badge }}">All</a>
                         </div>
                     </div>
-
-                     {# Date Filter #}
                     <div>
                         <label for="created_on" class="block text-sm font-medium text-gray-700 mb-1">Created On</label>
                         <div class="flex items-center">
-                            <input type="date" id="created_on" name="created_on" value="{{ current_filter_date or '' }}" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm py-1.5 h-9"> {# Fixed height #}
+                            <input type="date" id="created_on" name="created_on" value="{{ current_filter_date or '' }}" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm py-1.5 h-9">
                             {% if current_filter_date %}
-                                <a href="{{ url_for('index', status=current_filter_status, tag=current_filter_tag, search=current_search_term) }}" class="ml-2 text-red-600 hover:text-red-800 flex-shrink-0" title="Clear date filter">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
-                                </a>
+                                <a href="{{ url_for('index', status=current_filter_status, tag=current_filter_tag, search=current_search_term) }}" class="ml-2 text-red-600 hover:text-red-800 flex-shrink-0" title="Clear date filter"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg></a>
                             {% endif %}
                         </div>
                     </div>
-
-                     {# Tag Filter (Dropdown for space saving) #}
                     {% if all_tags %}
                     <div>
                         <label for="tag_filter" class="block text-sm font-medium text-gray-700 mb-1">Tag</label>
-                         <select id="tag_filter" name="tag" onchange="this.form.submit();" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md h-9"> {# Fixed height #}
+                         <select id="tag_filter" name="tag" onchange="this.form.submit();" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md h-9">
                              <option value="" {% if not current_filter_tag %}selected{% endif %}>All Tags</option>
                              {% for tag in all_tags %}
                              <option value="{{ tag.name }}" {% if current_filter_tag == tag.name %}selected{% endif %}>{{ tag.name }}</option>
@@ -113,30 +94,22 @@
                          </select>
                     </div>
                     {% endif %}
-
                  </div>
-
-                {# Action buttons for filter form #}
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 pt-4 border-t mt-4">
                     <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
                         Apply Search & Filters
                     </button>
-                    {# Clear All Filters & Search Link #}
                      {% if current_filter_tag or current_filter_status or current_filter_date or current_search_term %}
-                        <a href="{{ url_for('index') }}" class="text-sm text-gray-600 hover:text-gray-800 hover:underline">
-                            Clear All
-                        </a>
+                        <a href="{{ url_for('index') }}" class="text-sm text-gray-600 hover:text-gray-800 hover:underline">Clear All</a>
                      {% endif %}
                  </div>
             </form>
         </div>
     </section>
 
-
     {# --- Task List Section --- #}
     <section>
-         {# Conditional Heading #}
          <h2 class="text-xl font-semibold mb-4 text-gray-600">
              {% if current_search_term %} Search Results {% elif current_filter_tag or current_filter_status or current_filter_date %} Filtered Tasks {% else %} All Tasks {% endif %}
              <span class="text-sm font-normal text-gray-500">({{ tasks|length }} found)</span>
@@ -145,54 +118,44 @@
          {% if tasks %}
             <ul class="space-y-4">
                  {% for task in tasks %}
-                    {# --- CONVENTIONAL TASK CARD --- #}
+                    {# Task Card #}
                     <li class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-150 ease-in-out {% if task.is_complete %} task-completed {% endif %}">
                         <div class="p-4 sm:p-5">
-                             {# Top part: Title and Actions #}
                              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3">
                                  <h3 class="task-title text-lg font-semibold text-gray-800 mb-1 sm:mb-0">
-                                     {# Status Icon #}
-                                      {% if task.is_complete %}
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1.5 text-green-500 -mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                                      {% else %}
-                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1.5 text-yellow-500 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                                      {% if task.is_complete %} <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1.5 text-green-500 -mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                      {% else %} <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1.5 text-yellow-500 -mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                                       {% endif %}
                                      {{ task.title }}
                                  </h3>
-                                 {# Action Buttons (Text + Icon) #}
                                  <div class="flex-shrink-0 flex items-center space-x-1 mt-2 sm:mt-0">
                                      {% set action_button_class = 'inline-flex items-center px-2.5 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-indigo-500 transition duration-150 ease-in-out' %}
-
                                      <form action="{{ url_for('toggle_complete', task_id=task.id) }}" method="POST" class="inline-block">
+                                         {# --- CSRF TOKEN --- #}
+                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                          <button type="submit" title="{% if task.is_complete %}Mark Incomplete{% else %}Mark Complete{% endif %}" class="{{ action_button_class }}">
-                                             {% if task.is_complete %}
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-yellow-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" /></svg>
-                                                Incomplete
-                                             {% else %}
-                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-green-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                                                 Complete
+                                             {% if task.is_complete %} <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-yellow-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" /></svg>Incomplete
+                                             {% else %} <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-green-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>Complete
                                              {% endif %}
                                          </button>
                                      </form>
                                       <a href="{{ url_for('update_task', task_id=task.id) }}" title="Edit Task" class="{{ action_button_class }}">
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
-                                          Edit
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>Edit
                                       </a>
                                      <form action="{{ url_for('delete_task', task_id=task.id) }}" method="POST" class="inline-block">
-                                         <button type="submit" title="Delete Task" onclick="return confirm('Are you sure?');" class="{{ action_button_class }} !text-red-600 hover:!bg-red-50 focus:!ring-red-500"> {# Use !important for text color override #}
-                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                                             Delete
+                                         {# --- CSRF TOKEN --- #}
+                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                         <button type="submit" title="Delete Task" onclick="return confirm('Are you sure?');" class="{{ action_button_class }} !text-red-600 hover:!bg-red-50 focus:!ring-red-500">
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>Delete
                                          </button>
                                      </form>
                                  </div>
                              </div>
 
-                             {# Middle part: Description #}
                              {% if task.description %}
                                  <p class="task-description text-sm text-gray-600 mb-3">{{ task.description }}</p>
                              {% endif %}
 
-                             {# Bottom part: Meta info #}
                              <div class="text-xs text-gray-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-gray-100">
                                  <div class="flex items-center">
                                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -221,5 +184,5 @@
          {% endif %}
     </section>
 
-</div> {# --- End Alpine Component --- #}
+</div>
 {% endblock %}

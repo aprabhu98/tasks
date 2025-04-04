@@ -3,11 +3,13 @@
 {% block title %}Update Task{% endblock %}
 
 {% block content %}
-    {# Center the form, use standard card styling #}
     <div class="max-w-2xl mx-auto">
         <section class="bg-white p-5 sm:p-6 rounded-lg border border-gray-200 shadow-sm">
             <h2 class="text-lg font-semibold mb-5 border-b pb-3 text-gray-800">Update Task: <span class="font-normal text-gray-600">{{ task.title }}</span></h2>
             <form action="{{ url_for('update_task', task_id=task.id) }}" method="POST" class="space-y-4">
+                {# --- CSRF TOKEN --- #}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {# --- END CSRF TOKEN --- #}
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title <span class="text-red-500">*</span></label>
                     <input type="text" id="title" name="title" value="{{ task.title }}" required
